@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Love letter for crush</title>
+    <link rel="icon" href="data:,">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        #envelope { position: relative; width: 280px; height: 180px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; margin-left: auto; margin-right: auto; top: 150px; background-color: #d9534f; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        .front { position: absolute; width: 0; height: 0; z-index: 3; }
+        .flap { border-left: 140px solid transparent; border-right: 140px solid transparent; border-bottom: 82px solid transparent; border-top: 98px solid #d9534f; transform-origin: top; pointer-events: none; }
+        .pocket { border-left: 140px solid #f5a3a2; border-right: 140px solid #f5a3a2; border-bottom: 90px solid #ff6f61; border-top: 90px solid transparent; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
+        .letter { position: relative; background-color: #fff; width: 90%; margin-left: auto; margin-right: auto; height: 90%; top: 5%; border-radius: 6px; box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12); font-family: "Dancing Script", cursive; }
+        .words { position: absolute; left: 10%; width: 80%; height: 14%; background-color: #ffe6e6; }
+        .words.line1 { top: 10%; font-size: 0.7rem; width: 20%; height: 7%; }
+        .words.line2 { top: 30%; text-align: center; font-size: 1.1rem; }
+        .words.line3 { top: 50%; font-size: 1.1rem; text-align: center; }
+        .words.line4 { top: 70%; font-size: 1.1rem; text-align: center; }
+        .words.line5 { top: 85%; font-size: 0.9rem; text-align: right; font-style: italic; color: #d9534f; }
+        .open .flap { transform: rotateX(180deg); transition: transform 0.4s ease, z-index 0.6s; z-index: 1; }
+        .close .flap { transform: rotateX(0deg); transition: transform 0.4s 0.6s ease, z-index 1s; z-index: 5; }
+        .close .letter { transform: translateY(0px); transition: transform 0.4s ease, z-index 1s; z-index: 1; }
+        .open .letter { transform: translateY(-100px); transition: transform 0.4s 0.6s ease, z-index 0.6s; z-index: 2; }
+        .hearts { position: absolute; top: 90px; left: 0; right: 0; z-index: 2; }
+        .heart { position: absolute; bottom: 0; right: 10%; pointer-events: none; }
+        .heart:before, .heart:after { position: absolute; content: ""; left: 50px; top: 0; width: 50px; height: 80px; background: #e60073; border-radius: 50px 50px 0 0; transform: rotate(-45deg); transform-origin: 0 100%; pointer-events: none; }
+        .heart:after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
+        .close .heart { opacity: 0; animation: none; }
+        .a1 { left: 20%; transform: scale(0.6); opacity: 1; animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+        .a2 { left: 55%; transform: scale(1); opacity: 1; animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+        .a3 { left: 10%; transform: scale(0.8); opacity: 1; animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+        @keyframes slideUp { 0% { top: 0; } 100% { top: -600px; } }
+        @keyframes sideSway { 0% { margin-left: 0px; } 100% { margin-left: 50px; } }
+        body { background-color: #f0e6f6; }
+        .music-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ffa8a8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .music-content { text-align: center; background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); font-family: "Dancing Script", cursive; }
+        .music-content h2 { color: #d9534f; font-size: 2rem; margin-bottom: 20px; }
+        .music-btn { background: linear-gradient(45deg, #d9534f, #e60073); color: white; border: none; padding: 15px 30px; font-size: 1.2rem; border-radius: 25px; cursor: pointer; transition: transform 0.3s ease; font-family: "Dancing Script", cursive; margin: 10px; }
+        .music-btn:hover { transform: scale(1.05); }
+        .love-letter-content { opacity: 0; transition: opacity 1s ease-in; }
+        .love-letter-content.show { opacity: 1; }
+        .letter-text { transition: all 0.6s ease; }
+        .letter-text.fade-out { opacity: 0; transform: translateY(-20px); }
+        .letter-text.fade-in { opacity: 1; transform: translateY(0); animation: slideInText 0.8s ease; }
+        @keyframes slideInText { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .letter.changing { transform: scale(1.02); box-shadow: 0 4px 30px rgba(217, 83, 79, 0.3); transition: all 0.3s ease; }
+        .envlope-wrapper { height: 380px; }
+        .reset { text-align: center; }
+        .reset button { font-weight: 800; transition: all 0.1s linear; background-color: transparent; border: solid 2px #d9534f; border-radius: 4px; color: #d9534f; display: inline-block; font-size: 14px; text-transform: uppercase; margin: 5px; padding: 10px; line-height: 1em; text-decoration: none; min-width: 120px; cursor: pointer; }
+        .reset button:hover { background-color: #d9534f; color: #fff; }
+    </style>
+</head>
+<body>
+    <div id="music-screen" class="music-screen">
+        <div class="music-content">
+            <h2>🎵 Can we start with a music? 🎵</h2>
+            <button id="play-music" class="music-btn">Start with Music</button>
+        </div>
+    </div>
+    
+    <audio id="background-music" loop>
+        <source src="your-song.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div id="love-letter-content" class="love-letter-content" style="display: none;">
+        <div class="envlope-wrapper">
+            <div id="envelope" class="close">
+                <div class="front flap"></div>
+                <div class="front pocket"></div>
+                <div class="letter">
+                    <div class="words line1">To: Crush</div>
+                    <div class="words line2 letter-text">Dear crush, you are so beautiful</div>
+                    <div class="words line3 letter-text">That every time i see you</div>
+                    <div class="words line4 letter-text">my world stops,</div>
+                    <div class="words line5 letter-text">Love, Your Secret Admirer ❤️</div>
+                </div>
+                <div class="hearts">
+                    <div class="heart a1"></div>
+                    <div class="heart a2"></div>
+                    <div class="heart a3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="reset">
+            <button id="open">Open</button>
+            <button id="reset">Close</button>
+            <button id="next-letter">Next Letter ❤️</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var envelope = $("#envelope"), btn_open = $("#open"), btn_reset = $("#reset"), musicScreen = $("#music-screen"), loveLetterContent = $("#love-letter-content"), backgroundMusic = $("#background-music")[0], playMusicBtn = $("#play-music"), nextLetterBtn = $("#next-letter"), currentLetter = 0;
+            
+            var loveLetters = [
+                { line2: "Dear crush, you are so beautiful", line3: "That every time i see you", line4: "my world stops,", line5: "Love, Your Secret Admirer ❤️" },
+                { line2: "Every morning I wake up", line3: "thinking about your smile", line4: "You light up my entire world", line5: "Forever yours ✨" },
+                { line2: "Your laugh is my favorite song", line3: "Your eyes are like stars", line4: "I could get lost in them forever", line5: "With all my love 💫" },
+                { line2: "If I could give you one thing", line3: "It would be the ability to see", line4: "yourself through my eyes", line5: "You're perfect 🌹" },
+                { line2: "Distance means nothing when", line3: "someone means everything", line4: "You mean everything to me", line5: "Always and forever 💕" }
+            ];
+
+            playMusicBtn.click(function() {
+                backgroundMusic.play().then(function() {
+                    musicScreen.fadeOut(1000, function() { loveLetterContent.show().addClass('show'); });
+                }).catch(function() {
+                    musicScreen.fadeOut(1000, function() { loveLetterContent.show().addClass('show'); });
+                });
+            });
+
+            envelope.click(function () { open(); });
+            btn_open.click(function () { open(); });
+            btn_reset.click(function () { close(); });
+            nextLetterBtn.click(function() { currentLetter = (currentLetter + 1) % loveLetters.length; updateLetter(); });
+            
+            function updateLetter() {
+                var letter = loveLetters[currentLetter], $letterTexts = $(".letter-text"), $letterDiv = $(".letter");
+                $letterDiv.addClass("changing");
+                $letterTexts.addClass("fade-out");
+                setTimeout(function() {
+                    $(".letter .line2").text(letter.line2);
+                    $(".letter .line3").text(letter.line3);
+                    $(".letter .line4").text(letter.line4);
+                    $(".letter .line5").text(letter.line5);
+                    $letterTexts.removeClass("fade-out").addClass("fade-in");
+                    setTimeout(function() { $letterTexts.removeClass("fade-in"); $letterDiv.removeClass("changing"); }, 800);
+                }, 300);
+            }
+
+            function open() { envelope.addClass("open").removeClass("close"); }
+            function close() { envelope.addClass("close").removeClass("open"); }
+        });
+    </script>
+</body>
+</html>
